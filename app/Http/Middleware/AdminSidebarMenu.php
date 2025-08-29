@@ -137,6 +137,31 @@ class AdminSidebarMenu
                   </svg>', 'id' => 'tour_step4']
                 )->order(15);
             }
+            //Obras
+            if (auth()->user()->can('supplier.view') || auth()->user()->can('customer.view') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own')) {
+                $menu->dropdown(
+                    'Obras',
+                    function ($sub) {
+                        if (auth()->user()->can('supplier.view') || auth()->user()->can('supplier.view_own')) {
+                            $sub->url(
+                                action([\App\Http\Controllers\ObraController::class, 'index']),
+                                'Ver Obras',
+                                ['icon' => '', 'active' => request()->segment(1) == 'obra']
+                            );
+                        }   
+                    },
+                    ['icon' => '<svg aria-hidden="true" class="tw-size-5 tw-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M20 6v12a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2z"></path>
+                    <path d="M10 16h6"></path>
+                    <path d="M13 11m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                    <path d="M4 8h3"></path>
+                    <path d="M4 12h3"></path>
+                    <path d="M4 16h3"></path>
+                  </svg>', 'id' => 'tour_step4']
+                )->order(15);
+            }
 
             //Products dropdown
             if (auth()->user()->can('product.view') || auth()->user()->can('product.create') ||
