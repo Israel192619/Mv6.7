@@ -34,6 +34,7 @@ use App\Http\Controllers\ManageUserController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\NotificationTemplateController;
 use App\Http\Controllers\ObraController;
+use App\Http\Controllers\ObraUbicationController;
 use App\Http\Controllers\OpeningStockController;
 use App\Http\Controllers\PrinterController;
 use App\Http\Controllers\ProductController;
@@ -60,6 +61,7 @@ use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VariationTemplateController;
 use App\Http\Controllers\WarrantyController;
+use App\ObraUbication;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -153,6 +155,8 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::resource('contacts', ContactController::class);
 
     Route::resource('obras', ObraController::class);
+
+    Route::resource('obras.ubicaciones', ObraUbicationController::class);
 
     Route::get('taxonomies-ajax-index-page', [TaxonomyController::class, 'getTaxonomyIndexPage']);
     Route::resource('taxonomies', TaxonomyController::class);

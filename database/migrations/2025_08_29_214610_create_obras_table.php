@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('codigo')->unique();
             $table->string('descripcion');
-            $table->foreignId('business_id')->constrained('business')->onDelete('cascade');
             /* $table->string('ubicacion')->nullable();
             $table->date('fecha_inicio')->nullable();
             $table->date('fecha_fin')->nullable(); */

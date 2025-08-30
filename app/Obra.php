@@ -12,7 +12,6 @@ class Obra extends Model
         'nombre',
         'codigo',
         'descripcion',
-        'business_id',
         // 'ubicacion',
         // 'fecha_inicio',
         // 'fecha_fin',
