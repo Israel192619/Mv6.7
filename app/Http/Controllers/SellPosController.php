@@ -63,6 +63,8 @@ use Stripe\Charge;
 use Stripe\Stripe;
 use Yajra\DataTables\Facades\DataTables;
 use App\Events\SellCreatedOrModified;
+use App\Obra;
+use App\ObraUbication;
 
 class SellPosController extends Controller
 {
@@ -260,7 +262,7 @@ class SellPosController extends Controller
 
         //Added check because $users is of no use if enable_contact_assign if false
         $users = config('constants.enable_contact_assign') ? User::forDropdown($business_id, false, false, false, true) : [];
-
+        $obras = Obra::all();
         return view('sale_pos.create')
             ->with(compact(
                 'edit_discount',
@@ -294,6 +296,7 @@ class SellPosController extends Controller
                 'default_invoice_schemes',
                 'invoice_layouts',
                 'users',
+                'obras'
             ));
     }
 
@@ -317,6 +320,7 @@ class SellPosController extends Controller
      */
     public function store(Request $request)
     {
+        //dd($request->all());
         if (!auth()->user()->can('sell.create') && !auth()->user()->can('direct_sell.access') && !auth()->user()->can('so.create')) {
             abort(403, 'Unauthorized action.');
         }
@@ -488,6 +492,7 @@ class SellPosController extends Controller
                 if ($this->transactionUtil->isModuleEnabled('kitchen')) {
                     $input['is_kitchen_order'] = request()->get('is_kitchen_order');
                 }
+                $input['obra_ubication_id'] = request()->get('ubicacion_id') ?? null;
 
                 //upload document
                 $input['document'] = $this->transactionUtil->uploadFile($request, 'sell_document', 'documents');
@@ -807,6 +812,7 @@ class SellPosController extends Controller
      */
     public function edit($id)
     {
+        //dd($id);
         $business_id = request()->session()->get('user.business_id');
 
         if (!(auth()->user()->can('superadmin') || auth()->user()->can('sell.update')
@@ -1093,7 +1099,14 @@ class SellPosController extends Controller
         //Added check because $users is of no use if enable_contact_assign if false
         $users = config('constants.enable_contact_assign') ? User::forDropdown($business_id, false, false, false, true) : [];
         $only_payment = request()->segment(2) == 'payment';
-
+        // Ubicación que vamos a editar
+        $obraUbicacion = ObraUbication::with('obra')->find($transaction->obra_ubication_id);
+        if (!$obraUbicacion) {
+            // Si no existe, puedes crear un objeto vacío para que el formulario no rompa
+            $obraUbicacion = new ObraUbication();
+        }
+        // Todas las obras para el select
+        $obras = Obra::all();
         return view('sale_pos.edit')
             ->with(compact('business_details', 'taxes', 'payment_types', 'walk_in_customer',
                 'sell_details', 'transaction', 'payment_lines', 'location_printer_type', 'shortcuts',
@@ -1101,7 +1114,8 @@ class SellPosController extends Controller
                 'brands', 'accounts', 'waiters', 'redeem_details', 'edit_price', 'edit_discount',
                 'shipping_statuses', 'warranties', 'sub_type', 'pos_module_data', 'invoice_schemes',
                 'default_invoice_schemes', 'invoice_layouts', 'featured_products', 'customer_due',
-                'users', 'only_payment'));
+                'users', 'only_payment',
+                'obraUbicacion', 'obras'));
     }
 
     /**
@@ -1114,6 +1128,7 @@ class SellPosController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //dd($request->all());
         if (!auth()->user()->can('sell.update') && !auth()->user()->can('direct_sell.access') &&
             !auth()->user()->can('so.update') && !auth()->user()->can('edit_pos_payment')) {
             abort(403, 'Unauthorized action.');
@@ -1299,7 +1314,7 @@ class SellPosController extends Controller
 
                 //Begin transaction
                 DB::beginTransaction();
-
+                $input['obra_ubication_id'] = request()->get('ubicacion_id') ?? null;
                 $transaction = $this->transactionUtil->updateSellTransaction($id, $business_id, $input, $invoice_total, $user_id);
 
                 //update service staff timer

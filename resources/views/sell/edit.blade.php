@@ -303,6 +303,32 @@
 		        		data-transaction_id="{{$transaction->id}}">
 		        	</span>
 		        @endif
+				<div class="row">
+					<!-- Select de obras -->
+					<div class="col-sm-4">
+						<div class="form-group">
+							{!! Form::label('obra_id', 'Obra:') !!}
+							{!! Form::select('obra_id', $obras->pluck('nombre','id'), $obraUbicacion->obra_id ?? null, [
+								'class' => 'form-control select2',
+								'id' => 'obra_select',
+								'placeholder' => 'Seleccione una obra',
+							]) !!}
+						</div>
+					</div>
+
+					<!-- Select de ubicaciones -->
+					<div class="col-sm-4">
+						<div class="form-group">
+							{!! Form::label('ubicacion_id', 'Ubicación:') !!}
+							<select id="ubicacion_select" name="ubicacion_id" class="form-control select2">
+								<option value="">Seleccione una ubicación</option>
+								@if($obraUbicacion->id)
+									<option value="{{ $obraUbicacion->id }}" selected>{{ $obraUbicacion->ubicacion }}</option>
+								@endif
+							</select>
+						</div>
+					</div>
+				</div>
 			@endcomponent
 			
 			@component('components.widget', ['class' => 'box-solid'])

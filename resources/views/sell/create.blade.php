@@ -346,6 +346,26 @@
 		        	<span id="restaurant_module_span">
 		        	</span>
 		        @endif
+				<div class="col-sm-4">
+					<div class="form-group">
+						{!! Form::label('obra_id', 'Obra:') !!}
+						{!! Form::select('obra_id', $obras->pluck('nombre','id'), null, [
+							'class' => 'form-control select2',
+							'id' => 'obra_select',
+							'placeholder' => 'Seleccione una obra',
+							/* 'required' */
+						]) !!}
+					</div>
+				</div>
+
+				<div class="col-sm-4">
+					<div class="form-group">
+						{!! Form::label('ubicacion_id', 'Ubicación:') !!}
+						<select id="ubicacion_select" name="ubicacion_id" class="form-control select2" {{-- required --}}>
+							<option value="">Seleccione una ubicación</option>
+						</select>
+					</div>
+				</div>
 			@endcomponent
 
 			@component('components.widget', ['class' => 'box-solid'])
@@ -996,4 +1016,36 @@
 
     	});
     </script>
+	{{-- <script>
+		$(document).ready(function() {
+			$('#obra_select').on('change', function() {
+				var obraId = $(this).val();
+				console.log('Obra seleccionada:', obraId);
+				var $ubicacionSelect = $('#ubicacion_select');
+
+				// Vaciar select antes de llenar
+				$ubicacionSelect.empty().append('<option value="">Seleccione una ubicación</option>');
+
+				if (obraId) {
+					$.get('/obras/' + obraId + '/ubicaciones/list', function(data) {
+						//console.log('Ubicaciones recibidas:', data); // Para depurar
+
+						if (Array.isArray(data)) {
+							data.forEach(function(ubicacion) {
+								// Verificamos que existan los campos esperados
+								var id = ubicacion.id ?? ubicacion.ubicacion ?? '';
+								var nombre = ubicacion.ubicacion ?? ubicacion.name ?? 'Sin nombre';
+
+								$ubicacionSelect.append('<option value="'+id+'">'+nombre+'</option>');
+							});
+						}
+					}).fail(function(xhr) {
+						console.error('Error al traer ubicaciones:', xhr);
+						alert('No se pudieron cargar las ubicaciones.');
+					});
+				}
+			});
+		});
+
+	</script> --}}
 @endsection

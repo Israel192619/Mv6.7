@@ -53,6 +53,28 @@
 	</div>
 </div>
 <div class="row">
+	<div class="col-sm-4">
+		<div class="form-group">
+			{!! Form::label('obra_id', 'Obra:') !!}
+			{!! Form::select('obra_id', $obras->pluck('nombre','id'), null, [
+				'class' => 'form-control select2',
+				'id' => 'obra_select',
+				'placeholder' => 'Seleccione una obra',
+				/* 'required' */
+			]) !!}
+		</div>
+	</div>
+
+	<div class="col-sm-4">
+		<div class="form-group">
+			{!! Form::label('ubicacion_id', 'Ubicación:') !!}
+			<select id="ubicacion_select" name="ubicacion_id" class="form-control select2">
+				<option value="">Seleccione una ubicación</option>
+			</select>
+		</div>
+	</div>
+</div>
+<div class="row">
 	@if(!empty($pos_settings['show_invoice_layout']))
 	<div class="col-md-4">
 		<div class="form-group">

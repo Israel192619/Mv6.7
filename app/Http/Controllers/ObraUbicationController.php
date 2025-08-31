@@ -6,6 +6,7 @@ use App\Obra;
 use App\ObraUbication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ObraUbicationController extends Controller
 {
@@ -173,5 +174,10 @@ class ObraUbicationController extends Controller
             ];
         }
         return $output;
+    }
+    public function list($obraId)
+    {
+        $ubicaciones = ObraUbication::where('obra_id', $obraId)->get();
+        return response()->json($ubicaciones);
     }
 }

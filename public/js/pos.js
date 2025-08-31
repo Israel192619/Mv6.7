@@ -1484,6 +1484,61 @@ $(document).ready(function() {
     }, 60000);
 
     set_search_fields();
+
+
+    //Obras añadidas
+    /* $('#obra_select').on('change', function() {
+        var obraId = $(this).val();
+        console.log('Obra seleccionada:', obraId);
+        var $ubicacionSelect = $('#ubicacion_select');
+
+        // Vaciar select antes de llenar
+        $ubicacionSelect.empty().append('<option value="">Seleccione una ubicación</option>');
+
+        if (obraId) {
+            $.get('/obras/' + obraId + '/ubicaciones/list', function(data) {
+                //console.log('Ubicaciones recibidas:', data); // Para depurar
+
+                if (Array.isArray(data)) {
+                    data.forEach(function(ubicacion) {
+                        // Verificamos que existan los campos esperados
+                        var id = ubicacion.id ?? ubicacion.ubicacion ?? '';
+                        var nombre = ubicacion.ubicacion ?? ubicacion.name ?? 'Sin nombre';
+
+                        $ubicacionSelect.append('<option value="'+id+'">'+nombre+'</option>');
+                    });
+                }
+            }).fail(function(xhr) {
+                console.error('Error al traer ubicaciones:', xhr);
+                alert('No se pudieron cargar las ubicaciones.');
+            });
+        }
+    }); */
+
+    function loadUbicaciones(obraId, selectedId = null) {
+        $('#ubicacion_select').empty().append('<option value="">Seleccione una ubicación</option>');
+        if(obraId) {
+            $.get('/obras/' + obraId + '/ubicaciones/list', function(data) {
+                $.each(data, function(index, ubicacion) {
+                    let selected = selectedId && selectedId == ubicacion.id ? 'selected' : '';
+                    $('#ubicacion_select').append('<option value="'+ubicacion.id+'" '+selected+'>'+ubicacion.ubicacion+'</option>');
+                });
+            });
+        }
+    }
+
+    // Al cargar la página, si ya hay obra seleccionada
+    var initialObraId = $('#obra_select').val();
+    var initialUbicacionId = $('#ubicacion_select option[selected]').val();
+    if(initialObraId) {
+        loadUbicaciones(initialObraId, initialUbicacionId);
+    }
+
+    // Cambiar obra
+    $('#obra_select').on('change', function() {
+        var obraId = $(this).val();
+        loadUbicaciones(obraId);
+    });
 });
 
 function set_payment_type_dropdown() {

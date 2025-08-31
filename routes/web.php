@@ -156,7 +156,10 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
 
     Route::resource('obras', ObraController::class);
 
+    Route::get('/obras/{obra}/ubicaciones/list', [ObraUbicationController::class, 'list']);
+    
     Route::resource('obras.ubicaciones', ObraUbicationController::class);
+
 
     Route::get('taxonomies-ajax-index-page', [TaxonomyController::class, 'getTaxonomyIndexPage']);
     Route::resource('taxonomies', TaxonomyController::class);

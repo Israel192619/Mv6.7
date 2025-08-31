@@ -71,7 +71,7 @@ class ObraController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required',
+            'nombre' => 'required|unique:obras,nombre',
             'codigo' => 'required|unique:obras,codigo',
             // 'ubicacion' => 'nullable',
             // 'fecha_inicio' => 'nullable|date',
@@ -139,7 +139,7 @@ class ObraController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nombre' => 'required',
+            'nombre' => 'required|unique:obras,codigo,'.$id,
             'codigo' => 'required|unique:obras,codigo,'.$id,
             // 'ubicacion' => 'nullable',
             // 'fecha_inicio' => 'nullable|date',

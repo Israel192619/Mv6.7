@@ -9,6 +9,8 @@ use App\Contact;
 use App\CustomerGroup;
 use App\InvoiceScheme;
 use App\Media;
+use App\Obra;
+use App\ObraUbication;
 use App\Product;
 use App\SellingPriceGroup;
 use App\TaxRate;
@@ -810,6 +812,8 @@ class SellController extends Controller
         $users = config('constants.enable_contact_assign') ? User::forDropdown($business_id, false, false, false, true) : [];
 
         $change_return = $this->dummyPaymentLine;
+        
+        $obras = Obra::all();
 
         return view('sell.create')
             ->with(compact(
@@ -838,7 +842,8 @@ class SellController extends Controller
                 'is_order_request_enabled',
                 'users',
                 'default_price_group_id',
-                'change_return'
+                'change_return',
+                'obras'
             ));
     }
 
@@ -1248,9 +1253,17 @@ class SellController extends Controller
 
         //Added check because $users is of no use if enable_contact_assign if false
         $users = config('constants.enable_contact_assign') ? User::forDropdown($business_id, false, false, false, true) : [];
-
+        // Ubicación que vamos a editar
+        $obraUbicacion = ObraUbication::with('obra')->find($transaction->obra_ubication_id);
+        if (!$obraUbicacion) {
+            // Si no existe, puedes crear un objeto vacío para que el formulario no rompa
+            $obraUbicacion = new ObraUbication();
+        }
+        // Todas las obras para el select
+        $obras = Obra::all();
         return view('sell.edit')
-            ->with(compact('business_details', 'taxes', 'sell_details', 'transaction', 'commission_agent', 'types', 'customer_groups', 'pos_settings', 'waiters', 'invoice_schemes', 'default_invoice_schemes', 'redeem_details', 'edit_discount', 'edit_price', 'shipping_statuses', 'warranties', 'statuses', 'sales_orders', 'payment_types', 'accounts', 'payment_lines', 'change_return', 'is_order_request_enabled', 'customer_due', 'users'));
+            ->with(compact('business_details', 'taxes', 'sell_details', 'transaction', 'commission_agent', 'types', 'customer_groups', 'pos_settings', 'waiters', 'invoice_schemes', 'default_invoice_schemes', 'redeem_details', 'edit_discount', 'edit_price', 'shipping_statuses', 'warranties', 'statuses', 'sales_orders', 'payment_types', 'accounts', 'payment_lines', 'change_return', 'is_order_request_enabled', 'customer_due', 'users',
+            'obras', 'obraUbicacion'));
     }
 
     /**
