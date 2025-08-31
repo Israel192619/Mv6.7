@@ -157,3 +157,12 @@
 
 
 @endsection
+<style>
+    .obra-codigo {
+    background-color: #b6c9da9a; /* gris oscuro */
+    border-radius: 3px; /* casi cuadrado */
+    padding: 2px 5px;   /* ajusta tamaño */
+    font-weight: bold;
+    font-size: 1em;
+}
+</style>

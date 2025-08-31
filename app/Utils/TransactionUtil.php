@@ -4349,6 +4349,23 @@ class TransactionUtil extends Util
 
         return false;
     }
+    public function isObraUbicationInSell($obra_ubicacion)
+    {
+        $exists = Transaction::where('obra_ubication_id', $obra_ubicacion->id)->exists();
+        if ($exists) {
+            return true;
+        }
+
+        return false;
+    }
+    public function isObraUbicationInSellwith($obra)
+    {
+        // Obtener los IDs de las ubicaciones
+        $ubicacion_ids = $obra->ubicaciones->pluck('id')->toArray();
+
+        // Verificar si existe alguna transacción con estas ubicaciones
+        return Transaction::whereIn('obra_ubication_id', $ubicacion_ids)->exists();
+    }
 
     /**
      * Creates recurring invoice from existing sale
@@ -5078,6 +5095,8 @@ class TransactionUtil extends Util
                     '=',
                     'tos.id'
                 )
+                ->leftJoin('obra_ubications as ob', 'transactions.obra_ubication_id', '=', 'ob.id')
+                ->leftJoin('obras as o', 'ob.obra_id', '=', 'o.id')
                 ->where('transactions.business_id', $business_id)
                 ->where('transactions.type', $sale_type)
                 ->select(
@@ -5087,6 +5106,10 @@ class TransactionUtil extends Util
                     'transactions.is_direct_sale',
                     'transactions.invoice_no',
                     'transactions.invoice_no as invoice_no_text',
+                    'o.nombre as obra_nombre',
+                    'o.id as obra_id',
+                    'ob.ubicacion as obra_ubicacion',
+                    'ob.id as obras_ubication_id',
                     'contacts.name',
                     'contacts.mobile',
                     'contacts.contact_id',
@@ -5118,6 +5141,7 @@ class TransactionUtil extends Util
                     'transactions.custom_field_2',
                     'transactions.custom_field_3',
                     'transactions.custom_field_4',
+                    'transactions.obra_ubication_id as transaction_obra_ubication_id',
                     DB::raw('DATE_FORMAT(transactions.transaction_date, "%Y/%m/%d") as sale_date'),
                     DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
                     DB::raw('(SELECT SUM(IF(TP.is_return = 1,-1*TP.amount,TP.amount)) FROM transaction_payments AS TP WHERE

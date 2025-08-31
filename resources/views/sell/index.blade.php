@@ -72,6 +72,8 @@
                             <th>@lang('sale.customer_name')</th>
                             <th>@lang('lang_v1.contact_no')</th>
                             <th>@lang('sale.location')</th>
+                            <th>Obra</th>
+                            <th>Ubicacion</th>
                             <th>@lang('sale.payment_status')</th>
                             <th>@lang('lang_v1.payment_method')</th>
                             <th>@lang('sale.total_amount')</th>
@@ -96,20 +98,22 @@
                         </tr>
                     </thead>
                     <tbody></tbody>
-                    <tfoot>
-                        <tr class="bg-gray font-17 footer-total text-center">
-                            <td colspan="6"><strong>@lang('sale.total'):</strong></td>
-                            <td class="footer_payment_status_count"></td>
-                            <td class="payment_method_count"></td>
-                            <td class="footer_sale_total"></td>
-                            <td class="footer_total_paid"></td>
-                            <td class="footer_total_remaining"></td>
-                            <td class="footer_total_sell_return_due"></td>
-                            <td colspan="2"></td>
-                            <td class="service_type_count"></td>
-                            <td colspan="7"></td>
-                        </tr>
-                    </tfoot>
+                        <tfoot>
+                            <tr class="bg-gray font-17 footer-total text-center">
+                                <td colspan="4"><strong>@lang('sale.total'):</strong></td>
+                                <td></td>
+                                <td></td>
+                                <td class="footer_payment_status_count"></td>
+                                <td class="payment_method_count"></td>
+                                <td class="footer_sale_total"></td>
+                                <td class="footer_total_paid"></td>
+                                <td class="footer_total_remaining"></td>
+                                <td class="footer_total_sell_return_due"></td>
+                                <td colspan="2"></td>
+                                <td class="service_type_count"></td>
+                                <td colspan="7"></td>
+                            </tr>
+                        </tfoot>
                 </table>
             @endif
         @endcomponent
@@ -166,6 +170,11 @@
 
                         d.location_id = $('#sell_list_filter_location_id').val();
                         d.customer_id = $('#sell_list_filter_customer_id').val();
+                        //console.log(d.customer_id);
+                        d.obra_id = $('#filtro_obra_select').val();
+                        d.obra_ubication_id = $('#filtro_ubicacion_select').val();
+                        console.log(d.obra_ubication_id);
+
                         d.payment_status = $('#sell_list_filter_payment_status').val();
                         d.created_by = $('#created_by').val();
                         d.sales_cmsn_agnt = $('#sales_cmsn_agnt').val();
@@ -218,6 +227,14 @@
                     {
                         data: 'business_location',
                         name: 'bl.name'
+                    },
+                    {
+                        data: 'obra_nombre',
+                        name: 'obra_nombre'
+                    },
+                    {
+                        data: 'obra_ubicacion',
+                        name: 'obra_ubicacion'
                     },
                     {
                         data: 'payment_status',
@@ -364,7 +381,7 @@
             });
 
             $(document).on('change',
-                '#sell_list_filter_location_id, #sell_list_filter_customer_id, #sell_list_filter_payment_status, #created_by, #sales_cmsn_agnt, #service_staffs, #shipping_status, #sell_list_filter_source, #payment_method',
+                '#sell_list_filter_location_id, #sell_list_filter_customer_id,#filtro_obra_select,#filtro_ubicacion_select, #sell_list_filter_payment_status, #created_by, #sales_cmsn_agnt, #service_staffs, #shipping_status, #sell_list_filter_source, #payment_method',
                 function() {
                     sell_table.ajax.reload();
                 });
@@ -375,4 +392,31 @@
         });
     </script>
     <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
+  {{--   <script src="{{ asset('js/pos.js?v=' . $asset_v) }}"></script> --}}
+  <script>
+    function loadUbicaciones(obraId, selectedId = null) {
+        $('#filtro_ubicacion_select').empty().append('<option value="">Seleccione una ubicación</option>');
+        if(obraId) {
+            $.get('/obras/' + obraId + '/ubicaciones/list', function(data) {
+                $.each(data, function(index, ubicacion) {
+                    let selected = selectedId && selectedId == ubicacion.id ? 'selected' : '';
+                    $('#filtro_ubicacion_select').append('<option value="'+ubicacion.id+'" '+selected+'>'+ubicacion.ubicacion+'</option>');
+                });
+            });
+        }
+    }
+
+    // Al cargar la página, si ya hay obra seleccionada
+    var initialObraId = $('#filtro_obra_select').val();
+    var initialUbicacionId = $('#filtro_ubicacion_select').val();
+    if(initialObraId) {
+        loadUbicaciones(initialObraId, initialUbicacionId);
+    }
+
+    // Cambiar obra → recargar ubicaciones
+    $('#filtro_obra_select').on('change', function() {
+        var obraId = $(this).val();
+        loadUbicaciones(obraId);
+    });
+  </script>
 @endsection

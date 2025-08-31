@@ -203,6 +203,14 @@ class SellController extends Controller
                 $customer_id = request()->customer_id;
                 $sells->where('contacts.id', $customer_id);
             }
+            if (! empty(request()->obra_id)) {
+                $obra_id = request()->obra_id;
+                $sells->where('obra_id', $obra_id);
+            }
+            if (! empty(request()->obra_ubication_id)) {
+                $obra_ubication_id = request()->obra_ubication_id;
+                $sells->where('transactions.obra_ubication_id', $obra_ubication_id);
+            }
             if (! empty(request()->start_date) && ! empty(request()->end_date)) {
                 $start = request()->start_date;
                 $end = request()->end_date;
@@ -687,10 +695,10 @@ class SellController extends Controller
         }
 
         $payment_types = $this->transactionUtil->payment_types(null, true, $business_id);
-
+        $obras = Obra::all();
 
         return view('sell.index')
-        ->with(compact('business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses', 'sources', 'payment_types'));
+        ->with(compact('business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses', 'sources', 'payment_types','obras'));
     }
 
     /**

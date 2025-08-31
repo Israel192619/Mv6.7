@@ -18,6 +18,9 @@
                             <i class="fa fa-building"></i>
                         </span>
                         {!! Form::text('ubicacion', $ubicacion, ['class' => 'form-control', 'placeholder'=>'Nombre de ubicacion','required'])!!}
+                        <span class="input-group-addon">
+                            _{{ $obra->codigo }}
+                        </span>
                     </div>
                     {!! Form::hidden('obra_id', $obra_ubicacion->obra_id) !!}
                 </div>

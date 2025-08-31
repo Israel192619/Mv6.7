@@ -41,7 +41,7 @@
                             <tr>
                                 <th {{-- class="tw-w-full" --}}>@lang('messages.action')</th>
                                 <td >Nombre</td>
-                                <td>Codigo</td>
+                                <td>Codigo/Nombre corto</td>
                             </tr>
                         </thead>
                         <tfoot>

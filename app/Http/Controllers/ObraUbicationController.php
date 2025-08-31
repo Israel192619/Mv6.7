@@ -4,12 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Obra;
 use App\ObraUbication;
+use App\Utils\TransactionUtil;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ObraUbicationController extends Controller
 {
+    protected $transactionUtil;
+    public function __construct(TransactionUtil $transactionUtil)
+    {
+        $this->transactionUtil = $transactionUtil;
+        $this->middleware('auth');
+        // $this->middleware('permission:sell.create', ['only' => ['create', 'store']]);
+        // $this->middleware('permission:sell.view', ['only' => ['index']]);
+        // $this->middleware('permission:sell.update', ['only' => ['edit', 'update']]);
+        // $this->middleware('permission:sell.delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -20,6 +31,10 @@ class ObraUbicationController extends Controller
         $obra = Obra::find($obra_id);
         if(request()->ajax()){
             return datatables()->of(ObraUbication::where('obra_id', $obra_id)->get())
+                ->editColumn('ubicacion', function ($row) use ($obra) {
+                    // Modificamos la columna 'ubicacion' existente
+                    return $row->ubicacion . ' <span class="bg-secondary obra-codigo">_' . $obra->codigo . '</span>';
+                })
                 ->addColumn(
                     'action',
                     function ($row) {
@@ -52,7 +67,7 @@ class ObraUbicationController extends Controller
                         return $html;
                     }
                 )
-                ->rawColumns(['action'])
+                ->rawColumns(['action','ubicacion'])
                 ->make(true);
         }
         return view('obra_ubication.index')->with(compact('obra'));
@@ -120,7 +135,8 @@ class ObraUbicationController extends Controller
         //dump($obra_id);
         $obra_ubicacion = ObraUbication::find($id);
         $ubicacion = $obra_ubicacion->ubicacion;
-        return view('obra_ubication.edit')->with(compact('obra_ubicacion', 'ubicacion', 'obra_id'));
+        $obra = Obra::find($obra_id);
+        return view('obra_ubication.edit')->with(compact('obra_ubicacion', 'ubicacion', 'obra_id', 'obra'));
     }
 
     /**
@@ -164,6 +180,15 @@ class ObraUbicationController extends Controller
     public function destroy($obra_id, $id)
     {
         try {
+            $obra_ubicacion = ObraUbication::find($id);
+            if ($this->transactionUtil->isObraUbicationInSell($obra_ubicacion)) {
+                $output = [
+                    'success' => false,
+                    'msg' => 'No se puede eliminar la ubicacion porque esta asociada a una venta.',
+                ];
+
+                return $output;
+            }
             ObraUbication::find($id)->delete();
             $output = ['success' => true,
                 'msg' => 'Ubicacion eliminada exitosamente!',

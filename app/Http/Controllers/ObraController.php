@@ -3,11 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Obra;
+use App\Utils\TransactionUtil;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ObraController extends Controller
 {
+    private $transactionUtil;
+    public function __construct(TransactionUtil $transactionUtil)
+    {
+        $this->transactionUtil = $transactionUtil;
+        // $this->middleware('permission:sell.create', ['only' => ['create', 'store']]);
+        // $this->middleware('permission:sell.view', ['only' => ['index']]);
+        // $this->middleware('permission:sell.update', ['only' => ['edit', 'update']]);
+        // $this->middleware('permission:sell.delete', ['only' => ['destroy']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -183,6 +193,15 @@ class ObraController extends Controller
             ];
         } else {
             try {
+                $obra_con_ubicacion = Obra::where('id', $id)->with(['ubicaciones'])->first();
+                    if ($this->transactionUtil->isObraUbicationInSellwith($obra_con_ubicacion)) {
+                        $output = [
+                            'success' => false,
+                            'msg' => 'No se puede eliminar la obra porque tiene ubicaciones asociadas a una venta.',
+                        ];
+
+                        return $output;
+                    }
                 $obra->delete();
                 $output = ['success' => true,
                     'msg' => 'Obra eliminada exitosamente.',

@@ -15,6 +15,41 @@
     </div>
 </div>
 @endif
+<div class="col-md-3">
+    <div class="form-group">
+        {!! Form::label('sell_list_filter_obra_id',  'Obra' . ':') !!}
+        {!! Form::select(
+            'sell_list_filter_obra_id', 
+            $obras->pluck('nombre','id'), 
+            null, 
+            [
+                'class' => 'form-control select2',
+                'id'    => 'filtro_obra_select',   {{-- id único para el filtro --}}
+                'style' => 'width:100%',
+                'placeholder' => __('lang_v1.all')
+            ]
+        ) !!}
+    </div>
+</div>
+
+<div class="col-md-3">
+    <div class="form-group">
+        {!! Form::label('sell_list_filter_obra_ubication_id', 'Ubicación en obra:') !!}
+        {!! Form::select(
+            'sell_list_filter_obra_ubication_id', 
+            [], 
+            null, 
+            [
+                'class' => 'form-control select2',
+                'id'    => 'filtro_ubicacion_select', {{-- id único para el filtro --}}
+                'style' => 'width:100%',
+                'placeholder' => __('lang_v1.all')
+            ]
+        ) !!}
+    </div>
+</div>
+
+
 @if(empty($only) || in_array('sell_list_filter_payment_status', $only))
 <div class="col-md-3">
     <div class="form-group">
