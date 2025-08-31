@@ -9,7 +9,7 @@
     <section class="content">
         @component('components.widget', [
             'class' => 'box-primary',
-            'title' => 'Ubicacionses de la Obra',
+            'title' => 'Ubicaciónes de la Obra',
         ])
             @if (auth()->user()->can('supplier.create') ||
                     auth()->user()->can('customer.create') ||
