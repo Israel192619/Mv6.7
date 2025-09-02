@@ -14,7 +14,7 @@ $('#sell_list_filter_date_range').on('cancel.daterangepicker', function(ev, pick
     sell_table.ajax.reload();
 });
 
-$(document).on('change', '#sell_list_filter_location_id, #sell_list_filter_customer_id, #sell_list_filter_payment_status, #created_by, #sales_cmsn_agnt, #service_staffs, #shipping_status',  function() {
+$(document).on('change', '#sell_list_filter_location_id, #filtro_obra_select,#filtro_ubicacion_select, #sell_list_filter_customer_id, #sell_list_filter_payment_status, #created_by, #sales_cmsn_agnt, #service_staffs, #shipping_status',  function() {
     sell_table.ajax.reload();
 });
 
@@ -44,6 +44,8 @@ sell_table = $('#sell_table').DataTable({
                     d.location_id = $('#sell_list_filter_location_id').val();
                 }
                 d.customer_id = $('#sell_list_filter_customer_id').val();
+                d.obra_id = $('#filtro_obra_select').val();
+                d.obra_ubication_id = $('#filtro_ubicacion_select').val();
 
                 if($('#sell_list_filter_payment_status').length) {
                     d.payment_status = $('#sell_list_filter_payment_status').val();
@@ -76,6 +78,8 @@ sell_table = $('#sell_table').DataTable({
             { data: 'conatct_name', name: 'conatct_name'},
             { data: 'mobile', name: 'contacts.mobile'},
             { data: 'business_location', name: 'bl.name'},
+            { data: 'obra_nombre', name: 'obra_nombre'},
+            { data: 'obra_ubicacion', name: 'obra_ubicacion'},
             { data: 'payment_status', name: 'payment_status'},
             { data: 'payment_methods', orderable: false, "searchable": false},
             { data: 'final_total', name: 'final_total'},

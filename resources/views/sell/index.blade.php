@@ -73,7 +73,7 @@
                             <th>@lang('lang_v1.contact_no')</th>
                             <th>@lang('sale.location')</th>
                             <th>Obra</th>
-                            <th>Ubicacion</th>
+                            <th>Ubicacion de obra</th>
                             <th>@lang('sale.payment_status')</th>
                             <th>@lang('lang_v1.payment_method')</th>
                             <th>@lang('sale.total_amount')</th>

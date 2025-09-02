@@ -64,4 +64,30 @@
 @section('javascript')
 @include('sale_pos.partials.sale_table_javascript')
 <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
+<script>
+    function loadUbicaciones(obraId, selectedId = null) {
+        $('#filtro_ubicacion_select').empty().append('<option value="">Seleccione una ubicación</option>');
+        if(obraId) {
+            $.get('/obras/' + obraId + '/ubicaciones/list', function(data) {
+                $.each(data, function(index, ubicacion) {
+                    let selected = selectedId && selectedId == ubicacion.id ? 'selected' : '';
+                    $('#filtro_ubicacion_select').append('<option value="'+ubicacion.id+'" '+selected+'>'+ubicacion.ubicacion+'</option>');
+                });
+            });
+        }
+    }
+
+    // Al cargar la página, si ya hay obra seleccionada
+    var initialObraId = $('#filtro_obra_select').val();
+    var initialUbicacionId = $('#filtro_ubicacion_select').val();
+    if(initialObraId) {
+        loadUbicaciones(initialObraId, initialUbicacionId);
+    }
+
+    // Cambiar obra → recargar ubicaciones
+    $('#filtro_obra_select').on('change', function() {
+        var obraId = $(this).val();
+        loadUbicaciones(obraId);
+    });
+  </script>
 @endsection

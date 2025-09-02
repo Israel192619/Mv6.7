@@ -10,6 +10,8 @@
             <th>@lang('sale.customer_name')</th>
             <th>@lang('lang_v1.contact_no')</th>
             <th>@lang('sale.location')</th>
+            <th>Obra</th>
+            <th>Ubicacion de obra</th>
             <th>@lang('sale.payment_status')</th>
             <th>@lang('lang_v1.payment_method')</th>
             <th>@lang('sale.total_amount')</th>
@@ -31,6 +33,8 @@
     <tfoot>
         <tr class="bg-gray font-17 footer-total text-center">
             <td colspan="6"><strong>@lang('sale.total'):</strong></td>
+            <td></td>
+            <td></td>
             <td class="footer_payment_status_count"></td>
             <td class="payment_method_count"></td>
             <td class="footer_sale_total"></td>
