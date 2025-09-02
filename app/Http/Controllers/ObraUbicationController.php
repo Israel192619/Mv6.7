@@ -8,6 +8,7 @@ use App\Utils\TransactionUtil;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class ObraUbicationController extends Controller
 {
@@ -92,7 +93,13 @@ class ObraUbicationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'ubicacion' => 'required',
+            'obra_id' => 'required|exists:obras,id',
+            'ubicacion' => [
+                'required',
+                Rule::unique('obra_ubications')->where(function ($query) use ($request) {
+                    return $query->where('obra_id', $request->obra_id);
+                }),
+            ]
         ]);
         try {
             DB::beginTransaction();
@@ -151,8 +158,15 @@ class ObraUbicationController extends Controller
         //return $output = ['success' => false, 'msg' => $id ];
         try {
             $request->validate([
-                'ubicacion' => 'required|string|max:50',
-                'obra_id' => 'required|exists:obras,id'
+                'obra_id' => 'required|exists:obras,id',
+                'ubicacion' => [
+                'required',
+                Rule::unique('obra_ubications')
+                    ->where(function ($query) use ($request) {
+                        return $query->where('obra_id', $request->obra_id);
+                    })
+                    ->ignore($id),
+            ],
             ]);
 
             $ubicacion = ObraUbication::find($id);
